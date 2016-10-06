@@ -1,0 +1,60 @@
+How to gnu-efi 
+
+1. Insatll gnu-efi
+2. Write Program and Makefile (Example files are attached)
+3. Compile program
+        Make sure that you may need to adjust the EFIINC, LIB, and EFILIB variables to point to the
+        relevant portions of your GNU-EFI installation directory. EFIINC should, of course, point to 
+        your GNU-EFI include files; LIB should point to the directory that holds the libefi.a and libgnuefi.a files; 
+        and EFILIB should point to the directory that holds the crt0-efi-x86_64.o and elf_x86_64_efi.lds files 
+        (or equivalents for another architecture).
+
+4. Download efi-shell link:- https://edk2.svn.sourceforge.net/svnroot/edk2/trunk/edk2/EdkShellBinPkg/FullShell/X64/Shell_Full.efi
+
+5. Rename downloaded files as shellx64.efi
+
+6. Place them in the root directory of ESP
+
+7. Create entry in grub config to load efi-shell (Ex /etc/grub.d/40_custom)
+
+Ex :- menuentry "EFI shell" {
+        insmod part_gpt
+        insmod chain
+        set root='(hd0,gpt1)'
+        chainloader /shellx64.efi
+}
+
+9. Update grub and reboot (update-grub)
+
+10. Launch EFI shell, and type fs0: to change to the first filesystem,
+which is normally the ESP.
+You can then type hello.efi to launch the program.
+output
+
+Shell> fs0:
+
+fs0:\> hello.efi
+Hello, world!
+
+fs0:\> exit
+
+<efi.h>
+
+
+
+GNU-EFI includes four things:
+
+        crt0-efi-x86_64.o: A CRT0 (C runtime initialization code) that provides an entry point that UEFI firmware will 
+                           call when launching the application, which will in turn call the "efi_main" function that the developer writes.
+
+        libgnuefi.a: A library containing a single function (_relocate) that is used by the CRT0.
+
+        elf_x86_64_efi.lds: A linker script used to link UEFI applications.
+
+        efi.h and other headers: Convenience headers that provide structures, typedefs, and constants improve readability when accessing the 
+                                System Table and other UEFI resources.
+
+        libefi.a: A library containing convenience functions like CRC computation, string length calculation, and easy text printing.
+
+        efilib.h: Header for libefi.a.
+
