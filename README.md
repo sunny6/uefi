@@ -1,2 +1,3 @@
-# uefi
-uefi applications and how to
+# UEFI Sample Program
+
+Using gnu-efi
